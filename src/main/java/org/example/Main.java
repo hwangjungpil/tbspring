@@ -11,18 +11,18 @@ public class Main {
 
         User user = new User();
         user.setId("whiteship");
-        user.setName("백기선");
+        user.setName("baek");
         user.setPassword("married");
 
         dao.add(user);
 
-        System.out.println(user.getId() + " 등록 성공");
+        System.out.println(user.getId() + " add success");
 
         User user2 = dao.get(user.getId());
         System.out.println(user2.getName());
         System.out.println(user2.getPassword());
 
-        System.out.println(user2.getId() + " 조회 성공");
+        System.out.println(user2.getId() + " retrieve success");
 
     }
 }
