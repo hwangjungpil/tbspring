@@ -1,5 +1,6 @@
 package org.example;
 
+import springbook.user.dao.SimpleConnectionMaker;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 

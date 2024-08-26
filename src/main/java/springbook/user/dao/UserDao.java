@@ -2,12 +2,22 @@ package springbook.user.dao;
 
 import springbook.user.domain.User;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
+
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao() {
+        simpleConnectionMaker = new SimpleConnectionMaker();
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
         // JDBC API를 이용한 사용자 등록 코드
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
         PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
 
         ps.setString(1, user.getId());
@@ -22,7 +32,7 @@ public class UserDao {
 
     public User get(String id) throws ClassNotFoundException, SQLException {
         // JDBC API를 이용한 사용자 조회 코드
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
         PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
 
@@ -39,11 +49,5 @@ public class UserDao {
         c.close();
 
         return user;
-    }
-
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class clazz = Class.forName("org.h2.Driver");
-        Connection c = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/springbook", "sa", "password");
-        return c;
     }
 }
