@@ -3,6 +3,7 @@ package springbook.user.dao;
 import org.springframework.context.annotation.Bean;
 import springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,16 +12,18 @@ import java.sql.SQLException;
 
 public class UserDao {
 
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
+
+
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         // JDBC API를 이용한 사용자 등록 코드
-        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
         PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
 
         ps.setString(1, user.getId());
@@ -35,7 +38,7 @@ public class UserDao {
 
     public User get(String id) throws ClassNotFoundException, SQLException {
         // JDBC API를 이용한 사용자 조회 코드
-        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
         PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
 

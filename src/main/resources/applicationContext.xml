@@ -5,9 +5,14 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean id="connectionMaker" class="springbook.user.dao.SimpleConnectionMaker"/>
+    <bean id="datasource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:tcp://localhost/~/springbook"/>
+        <property name="username" value="sa"/>
+        <property name="password" value="password"/>
+    </bean>
 
     <bean id="userDao" class="springbook.user.dao.UserDao">
-        <constructor-arg index="0" ref="connectionMaker"/>
+        <property name="dataSource" ref="datasource"/>
     </bean>
 </beans>
