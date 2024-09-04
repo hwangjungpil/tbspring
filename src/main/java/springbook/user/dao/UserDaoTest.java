@@ -7,10 +7,15 @@ import springbook.user.domain.User;
 
 import java.sql.SQLException;
 
-//import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class UserDaoTest {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+
+    @Test
+    public void addAndGet() throws SQLException, ClassNotFoundException {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);
 
@@ -28,6 +33,9 @@ public class UserDaoTest {
         System.out.println(user2.getPassword());
 
         System.out.println(user2.getId() + " retrieve success");
+
+        assertThat(user2.getName(), is(user.getName()));
+        assertThat(user2.getPassword(), is(user.getPassword()));
     }
 
 }
