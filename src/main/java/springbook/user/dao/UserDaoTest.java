@@ -1,6 +1,5 @@
 package springbook.user.dao;
 
-import org.h2.jdbc.JdbcSQLNonTransientException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -66,7 +65,7 @@ public class UserDaoTest {
         assertThat(dao.getCount(), is(3));
     }
 
-    @Test(expected = JdbcSQLNonTransientException.class)
+    @Test(expected = EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException, ClassNotFoundException {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);
