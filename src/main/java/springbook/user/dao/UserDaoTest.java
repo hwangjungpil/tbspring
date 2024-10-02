@@ -19,12 +19,16 @@ public class UserDaoTest {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);
 
+        dao.deleteAll();
+        assertThat(dao.getCount(), is(0));
+
         User user = new User();
         user.setId("whiteship");
         user.setName("baek");
         user.setPassword("married");
 
         dao.add(user);
+        assertThat(dao.getCount(), is(1));
 
         System.out.println(user.getId() + " add success");
 
@@ -37,5 +41,7 @@ public class UserDaoTest {
         assertThat(user2.getName(), is(user.getName()));
         assertThat(user2.getPassword(), is(user.getPassword()));
     }
+
+
 
 }
