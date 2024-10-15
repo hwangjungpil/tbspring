@@ -30,6 +30,8 @@ public class UserDaoTest {
 
     @Autowired
     private ApplicationContext context;
+
+
     @Before
     public void setUp() {
 //        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
