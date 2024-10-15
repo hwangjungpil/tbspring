@@ -22,20 +22,7 @@ public class UserDao {
 
 
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-        // JDBC API를 이용한 사용자 등록 코드
-        Connection c = dataSource.getConnection();
-        PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
 
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.addBatch();
-        c.close();
-    }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
         // JDBC API를 이용한 사용자 조회 코드
@@ -68,6 +55,10 @@ public class UserDao {
         jdbcContextWithStatementStrategy(st);
     }
 
+    public void add(User user) throws ClassNotFoundException, SQLException {
+        StatementStrategy st = new AddStatement(user);
+        jdbcContextWithStatementStrategy(st);
+    }
     public void jdbcContextWithStatementStrategy(StatementStrategy strategy) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
@@ -94,6 +85,8 @@ public class UserDao {
             }
         }
     }
+
+
 
     public int getCount() throws SQLException {
         Connection c = null;
