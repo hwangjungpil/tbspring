@@ -64,11 +64,18 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
+        StatementStrategy st = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(st);
+    }
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy strategy) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
         try {
             c = dataSource.getConnection();
-            ps = c.prepareStatement("delete from users");
+
+            ps = strategy.makePreparedStatement(c);
+
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
@@ -116,4 +123,6 @@ public class UserDao {
         }
         return count;
     }
+
+
 }
