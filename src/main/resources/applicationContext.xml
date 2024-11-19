@@ -14,7 +14,7 @@
 
     <bean id="userDao" class="springbook.user.dao.UserDao">
         <property name="dataSource" ref="datasource"/>
-        <property name="jdbcContext" ref="jdbcContext"/>
+
     </bean>
 
     <bean id="jdbcContext" class="springbook.user.dao.JdbcContext">
