@@ -33,9 +33,9 @@ public class UserDaoTest {
     @Before
     public void setUp() {
 
-        this.user1 = new User("gyumee", "박성철", "springno1");
-        this.user2 = new User("leegw700", "이길원", "springno2");
-        this.user3 = new User("bumjin", "박범진", "springno3");
+        this.user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+        this.user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+        this.user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
 
     }
 
@@ -49,6 +49,9 @@ public class UserDaoTest {
         user.setId("whiteship");
         user.setName("baek");
         user.setPassword("married");
+        user.setLevel(Level.GOLD);
+        user.setLogin(1000);
+        user.setRecommend(999);
 
         this.dao.add(user);
         assertThat(this.dao.getCount(), is(1));
@@ -56,13 +59,10 @@ public class UserDaoTest {
         System.out.println(user.getId() + " add success");
 
         User user2 = this.dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
+        checkSameUser(user, user2);
 
         System.out.println(user2.getId() + " retrieve success");
 
-        assertThat(user2.getName(), is(user.getName()));
-        assertThat(user2.getPassword(), is(user.getPassword()));
     }
 
     @Test
@@ -88,5 +88,14 @@ public class UserDaoTest {
         assertThat(this.dao.getCount(), is(0));
 
         this.dao.get("unknown_id");
+    }
+
+    public void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId(), is(user2.getId()));
+        assertThat(user1.getName(), is(user2.getName()));
+        assertThat(user1.getPassword(), is(user2.getPassword()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommend(), is(user2.getRecommend()));
     }
 }
