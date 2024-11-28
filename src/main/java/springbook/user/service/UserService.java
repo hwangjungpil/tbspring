@@ -1,7 +1,9 @@
 package springbook.user.service;
 
 import lombok.Data;
+import springbook.user.dao.Level;
 import springbook.user.dao.UserDao;
+import springbook.user.domain.User;
 
 @Data
 public class UserService {
@@ -26,5 +28,10 @@ public class UserService {
     public void upgradeLevel(springbook.user.domain.User user) {
         user.upgradeLevel();
         userDao.update(user);
+    }
+
+    public void add(User user) {
+        if (user.getLevel() == null) user.setLevel(Level.BASIC);
+        userDao.add(user);
     }
 }

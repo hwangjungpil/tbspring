@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
     @Autowired
-    private UserDao dao;
+    private UserDao userDao;
 
     @Autowired
     private UserService userService;
@@ -60,15 +60,15 @@ public class UserDaoTest {
     @Test
     public void bean() {
         assertThat(this.userService, is(this.context.getBean("userService")));
-        assertThat(this.dao, is(this.context.getBean("userDao")));
+        assertThat(this.userDao, is(this.context.getBean("userDao")));
     }
 
     @Test
     public void update() {
-        this.dao.deleteAll();
+        this.userDao.deleteAll();
 
-        this.dao.add(user1);
-        this.dao.add(user2);
+        this.userDao.add(user1);
+        this.userDao.add(user2);
 
         user1.setName("오민규");
         user1.setPassword("springno6");
@@ -76,18 +76,18 @@ public class UserDaoTest {
         user1.setLogin(1000);
         user1.setRecommend(999);
 
-        this.dao.update(user1);
+        this.userDao.update(user1);
 
-        User user1update = this.dao.get(user1.getId());
+        User user1update = this.userDao.get(user1.getId());
         checkSameUser(user1, user1update);
-        User user2same = this.dao.get(user2.getId());
+        User user2same = this.userDao.get(user2.getId());
         checkSameUser(user2, user2same);
 }
     @Test
     public void addAndGet() throws SQLException, ClassNotFoundException {
 
-        this.dao.deleteAll();
-        assertThat(this.dao.getCount(), is(0));
+        this.userDao.deleteAll();
+        assertThat(this.userDao.getCount(), is(0));
 
         User user = new User();
         user.setId("whiteship");
@@ -97,12 +97,12 @@ public class UserDaoTest {
         user.setLogin(1000);
         user.setRecommend(999);
 
-        this.dao.add(user);
-        assertThat(this.dao.getCount(), is(1));
+        this.userDao.add(user);
+        assertThat(this.userDao.getCount(), is(1));
 
         System.out.println(user.getId() + " add success");
 
-        User user2 = this.dao.get(user.getId());
+        User user2 = this.userDao.get(user.getId());
         checkSameUser(user, user2);
 
         System.out.println(user2.getId() + " retrieve success");
@@ -112,26 +112,26 @@ public class UserDaoTest {
     @Test
     public void count() throws SQLException, ClassNotFoundException {
 
-        this.dao.deleteAll();
-        assertThat(this.dao.getCount(), is(0));
+        this.userDao.deleteAll();
+        assertThat(this.userDao.getCount(), is(0));
 
-        this.dao.add(this.user1);
-        assertThat(this.dao.getCount(), is(1));
+        this.userDao.add(this.user1);
+        assertThat(this.userDao.getCount(), is(1));
 
-        this.dao.add(this.user2);
-        assertThat(this.dao.getCount(), is(2));
+        this.userDao.add(this.user2);
+        assertThat(this.userDao.getCount(), is(2));
 
-        this.dao.add(this.user3);
-        assertThat(this.dao.getCount(), is(3));
+        this.userDao.add(this.user3);
+        assertThat(this.userDao.getCount(), is(3));
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException, ClassNotFoundException {
 
-        this.dao.deleteAll();
-        assertThat(this.dao.getCount(), is(0));
+        this.userDao.deleteAll();
+        assertThat(this.userDao.getCount(), is(0));
 
-        this.dao.get("unknown_id");
+        this.userDao.get("unknown_id");
     }
 
     public void checkSameUser(User user1, User user2) {
@@ -145,8 +145,8 @@ public class UserDaoTest {
 
     @Test
     public void upgradeLevels() {
-        dao.deleteAll();
-        for(User user : users) dao.add(user);
+        userDao.deleteAll();
+        for(User user : users) userDao.add(user);
 
         userService.upgradeLevels();
 
@@ -158,16 +158,35 @@ public class UserDaoTest {
     }
 
     public void checkLevel(User user, Level expectedLevel) {
-        User userUpdate = dao.get(user.getId());
+        User userUpdate = userDao.get(user.getId());
         assertThat(userUpdate.getLevel(), is(expectedLevel));
     }
 
     public void checkLevelUpgraded(User user, boolean upgraded) {
-        User userUpdate = dao.get(user.getId());
+        User userUpdate = userDao.get(user.getId());
         if(upgraded) {
             assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
         } else {
             assertThat(userUpdate.getLevel(), is(user.getLevel()));
         }
+    }
+
+    @Test
+    public void add() {
+        
+        userDao.deleteAll();
+
+        User userWithLevel = users.get(4);
+        User userWithoutLevel = users.get(0);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        User userWithLevelRead = userDao.get(userWithLevel.getId());
+        User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+
+        assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
+        assertThat(userWithoutLevelRead.getLevel(), is(userWithoutLevel.getLevel()));
+
     }
 }

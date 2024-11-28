@@ -1,12 +1,14 @@
 package springbook.user.dao;
 
 public enum Level {
-    BASIC(1), SILVER(2), GOLD(3);
+    GOLD(3,null), SILVER(2,GOLD), BASIC(1,SILVER);
 
     private final int value;
+    private final Level next;
 
-    Level(int value) {
+    Level(int value, Level next) {
         this.value = value;
+        this.next = next;
     }
 
     public int intValue() {
@@ -22,10 +24,8 @@ public enum Level {
         }
     }
 
-
     public Level nextLevel() {
-        if(this == BASIC) return SILVER;
-        else if(this == SILVER) return GOLD;
-        else return null;
+        return this.next;
     }
+
 }
