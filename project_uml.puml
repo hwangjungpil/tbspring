@@ -1,0 +1,114 @@
+@startuml tbspring-project-uml
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classFontName Arial
+
+' Domain Layer
+package "springbook.user.domain" {
+    class User {
+        -String id
+        -String name
+        -String password
+        -Level level
+        -int login
+        -int recommend
+        +User()
+        +User(id, name, password, level, login, recommend)
+        +upgradeLevel(): void
+    }
+}
+
+' DAO Layer
+package "springbook.user.dao" {
+    enum Level {
+        GOLD(3, null)
+        SILVER(2, GOLD)
+        BASIC(1, SILVER)
+        -int value
+        -Level next
+        +Level(value: int, next: Level)
+        +intValue(): int
+        +valueOf(value: int): Level
+        +nextLevel(): Level
+    }
+
+    interface UserDao {
+        +add(user: User): void
+        +get(id: String): User
+        +getAll(): List<User>
+        +deleteAll(): void
+        +getCount(): int
+        +update(user: User): void
+    }
+
+    class UserDaoJdbc {
+        -JdbcTemplate jdbcTemplate
+        +setDataSource(dataSource: DataSource): void
+        +add(user: User): void
+        +get(id: String): User
+        +getAll(): List<User>
+        +deleteAll(): void
+        +getCount(): int
+        +update(user: User): void
+    }
+
+    interface ConnectionMaker {
+        +makeConnection(): Connection
+    }
+
+    class SimpleConnectionMaker {
+        +makeConnection(): Connection
+    }
+
+    class DaoFactory {
+        +userDao(): UserDaoJdbc
+        +dataSource(): DataSource
+    }
+}
+
+' Service Layer
+package "springbook.user.service" {
+    class UserService {
+        -UserDao userDao
+        +upgradeLevels(): void
+        +canUpgradeLevel(user: User): boolean
+        +upgradeLevel(user: User): void
+        +add(user: User): void
+    }
+}
+
+' External Dependencies
+package "Spring Framework" {
+    class JdbcTemplate
+    interface DataSource
+}
+
+package "H2 Database" {
+    class Driver
+}
+
+' Relationships
+UserDao <|.. UserDaoJdbc : implements
+ConnectionMaker <|.. SimpleConnectionMaker : implements
+
+UserService --> UserDao : uses
+UserDaoJdbc --> JdbcTemplate : uses
+UserDaoJdbc --> DataSource : uses
+DaoFactory --> UserDaoJdbc : creates
+DaoFactory --> DataSource : creates
+
+User --> Level : has
+UserService --> User : manages
+
+JdbcTemplate --> DataSource : uses
+Driver --> DataSource : implements
+
+' Notes
+note right of User : Domain Entity
+note right of UserDao : Data Access Interface
+note right of UserService : Business Logic
+note right of DaoFactory : Spring Configuration
+
+@enduml 

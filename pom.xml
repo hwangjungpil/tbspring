@@ -72,4 +72,27 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.jeluard</groupId>
+                <artifactId>plantuml-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <sourceFiles>
+                        <sourceFile>project_uml.puml</sourceFile>
+                    </sourceFiles>
+                    <outputDirectory>${project.build.directory}/uml</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
